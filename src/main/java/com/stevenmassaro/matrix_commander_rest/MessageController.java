@@ -22,9 +22,10 @@ class MessageController {
         if (roomId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found.");
         }
-        String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId + " -m " + message;
+        String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId + " -m";
 
         CommandLine cmdLine = CommandLine.parse(command);
+        cmdLine.addArgument(message, false);
         DefaultExecutor executor = DefaultExecutor.builder().get();
         return executor.execute(cmdLine);
     }
