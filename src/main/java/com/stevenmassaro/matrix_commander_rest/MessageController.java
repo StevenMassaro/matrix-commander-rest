@@ -4,10 +4,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -19,8 +16,8 @@ class MessageController {
     @Value("#{'${ROOMS}'.split(';')}")
     private List<String> rooms;
 
-    @RequestMapping(path = "/message/{room}/{message}", method = RequestMethod.POST)
-    int sendMessage(@PathVariable("room") String room, @PathVariable("message") String message) throws IOException {
+    @RequestMapping(path = "/message/{room}", method = RequestMethod.POST)
+    int sendMessage(@PathVariable("room") String room, @RequestBody String message) throws IOException {
         String roomId = getRoomIdFromName(room);
         if (roomId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found.");
