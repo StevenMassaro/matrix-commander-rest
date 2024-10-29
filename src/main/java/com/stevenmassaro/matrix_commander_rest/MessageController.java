@@ -4,6 +4,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +18,7 @@ class MessageController {
     private List<String> rooms;
 
     @RequestMapping(path = "/message/{room}", method = RequestMethod.POST)
-    int sendMessage(@PathVariable("room") String room, @RequestBody String message) throws IOException {
+    int sendMessage(@PathVariable("room") String room, @RequestParam MultiValueMap message) throws IOException {
         String roomId = getRoomIdFromName(room);
         if (roomId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found.");
@@ -25,7 +26,7 @@ class MessageController {
         String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId + " -m";
 
         CommandLine cmdLine = CommandLine.parse(command);
-        cmdLine.addArgument(message, false);
+        cmdLine.addArgument(String.valueOf(message.getFirst("message")), false);
         DefaultExecutor executor = DefaultExecutor.builder().get();
         return executor.execute(cmdLine);
     }
