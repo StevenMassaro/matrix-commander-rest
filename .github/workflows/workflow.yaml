@@ -29,7 +29,7 @@ jobs:
         id: version
         run: echo "VERSION=$(head Dockerfile -n 1 | cut -d ':' -f2)" >> $GITHUB_OUTPUT
       - name: Show extracted matrix-commander version
-        run: echo ${{ steps.project.outputs.version }}
+        run: echo ${{ steps.version.outputs.VERSION }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -51,7 +51,7 @@ jobs:
           context: .
           tags: |
             stevenmassaro/matrix-commander-rest:latest
-            stevenmassaro/matrix-commander-rest:${{ steps.project.outputs.version }}
+            stevenmassaro/matrix-commander-rest:${{ steps.version.outputs.VERSION }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
       - name: Image digest
