@@ -47,7 +47,7 @@ jobs:
       - name: Build image and push to Docker Hub
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/arm64,linux/amd64
+          platforms: linux/amd64
           context: .
           tags: |
             stevenmassaro/matrix-commander-rest:latest
