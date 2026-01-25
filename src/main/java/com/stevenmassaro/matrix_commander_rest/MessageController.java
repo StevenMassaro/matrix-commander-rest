@@ -1,6 +1,7 @@
 package com.stevenmassaro.matrix_commander_rest;
 
 import com.stevenmassaro.matrix_commander_rest.model.MessageRequest;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@Log4j2
 class MessageController {
 
     @Value("#{'${ROOMS}'.split(';')}")
@@ -57,6 +59,8 @@ class MessageController {
         }
 
         command += " -m";
+
+        log.trace(command);
 
         CommandLine cmdLine = CommandLine.parse(command);
         cmdLine.addArgument(message, false);
