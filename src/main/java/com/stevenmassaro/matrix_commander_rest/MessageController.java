@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +20,8 @@ class MessageController {
     @Value("#{'${ROOMS}'.split(';')}")
     private List<String> rooms;
 
+    @Value("${MATRIX_COMMANDER_LOG_LEVEL}")
+    private String logLevel;
 
     @RequestMapping(path = "/message/{room}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public int sendMessageForm(
@@ -47,7 +50,13 @@ class MessageController {
         if (roomId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found.");
         }
-        String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId + " -m";
+        String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId;
+
+        if (!StringUtils.isEmpty(logLevel)) {
+            command += "--log-level " + logLevel;
+        }
+
+        command += " -m";
 
         CommandLine cmdLine = CommandLine.parse(command);
         cmdLine.addArgument(message, false);
