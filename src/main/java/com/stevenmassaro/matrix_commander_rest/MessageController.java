@@ -55,7 +55,7 @@ class MessageController {
         String command = "/bin/python3 /app/matrix_commander/matrix-commander -s /data/store -c /data/credentials.json -r " + roomId;
 
         if (!StringUtils.isEmpty(logLevel)) {
-            command += "--log-level " + logLevel;
+            command += " --log-level " + logLevel;
         }
 
         command += " -m";
